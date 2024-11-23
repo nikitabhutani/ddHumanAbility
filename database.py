@@ -10,6 +10,9 @@ def save_user_response(user_data):
     # Calculate accuracy
     correct_answers = calculate_accuracy(user_data['responses'])
     user_data['accuracy'] = correct_answers / len(user_data['responses'])
+    noofyes=count_familiarity(user_data['familiarity'])
+    user_data['fam_score']=noofyes/len(user_data['familiarity'])
+    # user_data['familiarity']=countofyes/len(user_data['familiarity'])
     
     # Load existing responses
     if DB_PATH.exists():
@@ -35,19 +38,28 @@ def load_all_responses():
         responses = json.load(f)
     
     return pd.DataFrame(responses)
-
+def count_familiarity(responses):
+    count=0
+    for i in range(len(responses)):
+        if responses[i]=='Yes':
+            count=count+1
+    return count
 def calculate_accuracy(responses):
     """Calculate number of correct responses based on ground truth."""
     # Replace this with actual ground truth for your media pairs
-    ground_truth = {
-        'Image 1': 2,
-        'Image 2': 1,
-        'Image 3': 2,
-        'Video 1': 2,
-        'Video 2': 1,
-        'Audio Video 1': 2,
-        'Audio Video 2': 1
-    }
+    ground_truth = {}
+
+# Add 25 images
+    for i in range(1, 26):
+        ground_truth[f'Image {i}'] = 1
+
+    # Add 15 videos
+    for i in range(1, 16):
+        ground_truth[f'Video {i}'] = 1
+
+    # Add 10 audio videos
+    for i in range(1, 11):
+        ground_truth[f'Audio Video {i}'] = 1
     
     correct = 0
     for response, truth in zip(responses, ground_truth.values()):

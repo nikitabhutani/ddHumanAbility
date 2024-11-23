@@ -70,60 +70,90 @@ def main():
         
         with st.form("detection_test"):
             responses = []
-            
+            familiarity=[]
             # Display Images
             st.subheader("Image Analysis")
             for i, (real_img, fake_img) in enumerate(zip(
-                media_config['images']['real'][:3], 
-                media_config['images']['fake'][:3]
+                media_config['images']['real'][:25], 
+                media_config['images']['fake'][:25]
             )):
                 col1, col2 = st.columns(2)
                 with col1:
                     st.image(str(real_img), caption=f"Image {i*2 + 1}")
+                    fam1=st.radio(
+                    f"do you know person in image 1 (Pair {i+1})",
+                    [f"Yes", f"No"]
+                )
                 with col2:
                     st.image(str(fake_img), caption=f"Image {i*2 + 2}")
+                    fam2=st.radio(
+                    f"do you know person in image 2 (Pair {i+1})",
+                    [f"Yes", f"No"]
+                )
+               
+                
                 response = st.radio(
                     f"Which image do you think is fake? (Pair {i+1})",
                     [f"Image {i*2 + 1}", f"Image {i*2 + 2}"]
                 )
                 responses.append(response)
-            
+                familiarity.append(fam1)
+                familiarity.append(fam2)
             # Display Videos
             st.subheader("Video Analysis")
             for i, (real_video, fake_video) in enumerate(zip(
-                media_config['videos']['no_audio']['real'][:2],
-                media_config['videos']['no_audio']['fake'][:2]
+                media_config['videos']['no_audio']['real'][:15],
+                media_config['videos']['no_audio']['fake'][:15]
             )):
                 col1, col2 = st.columns(2)
                 with col1:
                     st.video(str(real_video))
+                    fam1=st.radio(
+                    f"do you know person in video 1 (Pair {i+1})",
+                    [f"Yes", f"No"]
+                    )
                 with col2:
                     st.video(str(fake_video))
+                    fam2=st.radio(
+                    f"do you know person in video 2 (Pair {i+1})",
+                    [f"Yes", f"No"]
+                    )
                 response = st.radio(
                     f"Which video do you think is fake? (Pair {i+1})",
                     [f"Video {i*2 + 1}", f"Video {i*2 + 2}"]
                 )
                 responses.append(response)
-            
+                familiarity.append(fam1)
+                familiarity.append(fam2)
             # Display Audio Videos
             st.subheader("Video with Audio Analysis")
             for i, (real_video, fake_video) in enumerate(zip(
-                media_config['videos']['with_audio']['real'][:2],
-                media_config['videos']['with_audio']['fake'][:2]
+                media_config['videos']['with_audio']['real'][:10],
+                media_config['videos']['with_audio']['fake'][:10]
             )):
                 col1, col2 = st.columns(2)
                 with col1:
                     st.video(str(real_video))
+                    fam1=st.radio(
+                    f"do you know person in video 1 (Pair {i+1})",
+                    [f"Yes", f"No"]
+                    )
                 with col2:
                     st.video(str(fake_video))
+                    fam2=st.radio(
+                    f"do you know person in video 2 (Pair {i+1})",
+                    [f"Yes", f"No"]
+                    )
                 response = st.radio(
                     f"Which video do you think is fake? (Audio Pair {i+1})",
                     [f"Video {i*2 + 1}", f"Video {i*2 + 2}"]
                 )
                 responses.append(response)
-
+                familiarity.append(fam1)
+                familiarity.append(fam2)
             if st.form_submit_button("Submit Responses"):
                 st.session_state.user_data['responses'] = responses
+                st.session_state.user_data['familiarity'] = familiarity
                 save_user_response(st.session_state.user_data)
                 st.session_state.page = 'results'
                 st.rerun()
@@ -151,6 +181,12 @@ def main():
                               title='Social Media Usage vs Detection Accuracy',
                               trendline="ols")
         st.plotly_chart(fig_social)
+
+        fig_fam = px.scatter(all_responses, x='fam_score', 
+                              y='accuracy',
+                              title='familiarity vs Detection Accuracy',
+                              trendline="ols")
+        st.plotly_chart(fig_fam)
         
         # Gender comparison
         fig_gender = px.box(all_responses, x='gender', y='accuracy',
