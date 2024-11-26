@@ -121,7 +121,7 @@ def main():
                     )
                 response = st.radio(
                     f"Which video do you think is fake? (Pair {i+1})",
-                    [f"Video {i*2 + 1}", f"Video {i*2 + 2}"]
+                    [f"Video {i*2 + 1+50}", f"Video {i*2 + 2+50}"]
                 )
                 responses.append(response)
                 familiarity.append(fam1)
@@ -147,7 +147,7 @@ def main():
                     )
                 response = st.radio(
                     f"Which video do you think is fake? (Audio Pair {i+1})",
-                    [f"Video {i*2 + 1}", f"Video {i*2 + 2}"]
+                    [f"Video {i*2 + 1+80}", f"Video {i*2 + 2+80}"]
                 )
                 responses.append(response)
                 familiarity.append(fam1)
@@ -183,18 +183,30 @@ def main():
                               title='Social Media Usage vs Detection Accuracy',
                               trendline="ols")
         st.plotly_chart(fig_social)
-
+        # familiarty
         fig_fam = px.scatter(all_responses, x='fam_score', 
                               y='accuracy',
                               title='familiarity vs Detection Accuracy',
                               trendline="ols")
         st.plotly_chart(fig_fam)
-        # audio vs no audio
-        fig_fam = px.scatter(all_responses, x='fam_score', 
+        # images
+        fig_images = px.scatter(all_responses, x='images', 
                               y='accuracy',
-                              title='familiarity vs Detection Accuracy',
+                              title='Images vs Detection Accuracy',
                               trendline="ols")
-        st.plotly_chart(fig_fam)
+        st.plotly_chart(fig_images)
+         # Videos without Audio
+        fig_videos = px.scatter(all_responses, x='withoutAudio', 
+                              y='accuracy',
+                              title='Videos without Audio vs Detection Accuracy',
+                              trendline="ols")
+        st.plotly_chart(fig_videos)
+        # Videos with Audio
+        fig_videos_audio = px.scatter(all_responses, x='withAudio', 
+                              y='accuracy',
+                              title='Videos with Audio vs Detection Accuracy',
+                              trendline="ols")
+        st.plotly_chart(fig_videos_audio)
         # Gender comparison
         fig_gender = px.box(all_responses, x='gender', y='accuracy',
                           title='Detection Accuracy by Gender')
