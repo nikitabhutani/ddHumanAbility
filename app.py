@@ -71,6 +71,7 @@ def main():
         with st.form("detection_test"):
             responses = []
             familiarity=[]
+           
             # Display Images
             st.subheader("Image Analysis")
             for i, (real_img, fake_img) in enumerate(zip(
@@ -135,13 +136,13 @@ def main():
                 with col1:
                     st.video(str(real_video))
                     fam1=st.radio(
-                    f"do you know person in video 1 (Pair {i+1})",
+                    f"do you know person in video {2*i+1}? ",
                     [f"Yes", f"No"]
                     )
                 with col2:
                     st.video(str(fake_video))
                     fam2=st.radio(
-                    f"do you know person in video 2 (Pair {i+1})",
+                    f"do you know person in video {2*i+2} ? ",
                     [f"Yes", f"No"]
                     )
                 response = st.radio(
@@ -151,6 +152,7 @@ def main():
                 responses.append(response)
                 familiarity.append(fam1)
                 familiarity.append(fam2)
+
             if st.form_submit_button("Submit Responses"):
                 st.session_state.user_data['responses'] = responses
                 st.session_state.user_data['familiarity'] = familiarity
@@ -187,7 +189,12 @@ def main():
                               title='familiarity vs Detection Accuracy',
                               trendline="ols")
         st.plotly_chart(fig_fam)
-        
+        # audio vs no audio
+        fig_fam = px.scatter(all_responses, x='fam_score', 
+                              y='accuracy',
+                              title='familiarity vs Detection Accuracy',
+                              trendline="ols")
+        st.plotly_chart(fig_fam)
         # Gender comparison
         fig_gender = px.box(all_responses, x='gender', y='accuracy',
                           title='Detection Accuracy by Gender')

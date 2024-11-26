@@ -12,6 +12,7 @@ def save_user_response(user_data):
     user_data['accuracy'] = correct_answers / len(user_data['responses'])
     noofyes=count_familiarity(user_data['familiarity'])
     user_data['fam_score']=noofyes/len(user_data['familiarity'])
+    
     # user_data['familiarity']=countofyes/len(user_data['familiarity'])
     
     # Load existing responses
