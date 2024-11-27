@@ -1,4 +1,5 @@
 # app.py
+import statistics
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -9,7 +10,7 @@ from pathlib import Path
 import json
 from analysis import perform_bayesian_analysis
 from database import save_user_response, load_all_responses
-
+import matplotlib.pyplot as plt
 def load_media_paths():
     """Load paths to deepfake and real media files."""
     # Replace these paths with your actual dataset paths
@@ -189,6 +190,30 @@ def main():
                               title='familiarity vs Detection Accuracy',
                               trendline="ols")
         st.plotly_chart(fig_fam)
+    
+        all_responses['withAudio'] = all_responses['withAudio'].astype(int)
+        all_responses['withoutAudio'] = all_responses['withoutAudio'].astype(int)
+        all_responses['images'] = all_responses['images'].astype(int)
+        withaudio=all_responses['withAudio'].mean()
+        withoutaudio=all_responses['withoutAudio'].mean()
+        print(withoutaudio)
+        images=all_responses['images'].mean()
+        accuracy=[1,2,3]
+        # accuracy.append(images)
+        # print(images)
+        # accuracy.append(withaudio)
+        # print(withaudio)
+        # accuracy.append(withoutaudio)
+        # print(withoutaudio)
+        # print(accuracy)
+        # fig = plt.figure(figsize = (10, 5))
+        plt.bar(['Images', 'WithAudio', 'WithoutAudio'], accuracy, color=['skyblue', 'lightgreen', 'lightcoral'],width=0.5, alpha=0.8)
+
+        # Adding labels and title
+        plt.xlabel('Categories')
+        plt.ylabel('Accuracy')
+        plt.title('Accuracy for Images, With Audio, and Without Audio')
+        plt.show()
         # images
         fig_images = px.scatter(all_responses, x='images', 
                               y='accuracy',

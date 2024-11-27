@@ -1,39 +1,104 @@
-# database.py
 import json
 from pathlib import Path
 import pandas as pd
+import gspread
+from oauth2client.service_account import ServiceAccountCredentials
 
-DB_PATH = Path('data/responses.json')
+# Configure Google Sheets access
+def get_google_sheet():
+    """
+    Authenticate and get access to the Google Sheet.
+    Make sure to set up a service account and download the credentials JSON.
+    """
+    # Define the scope
+    scope = [
+        'https://spreadsheets.google.com/feeds',
+        'https://www.googleapis.com/auth/drive'
+    ]
+    
+    # Path to your service account credentials JSON file
+    creds_path = 'ddhumanability.json'
+    
+    # Authenticate using the credentials
+    creds = ServiceAccountCredentials.from_json_keyfile_name(creds_path, scope)
+    client = gspread.authorize(creds)
+    
+    # Open the specific spreadsheet (replace with your spreadsheet name)
+    sheet = client.open('ddhumanability').sheet1
+    
+    return sheet
 
 def save_user_response(user_data):
-    """Save user response to JSON database."""
+    """Save user response to Google Sheets."""
     # Calculate accuracy
     correct_answers = calculate_accuracy(user_data['responses'])
     user_data['accuracy'] = correct_answers / len(user_data['responses'])
-    noofyes=count_familiarity(user_data['familiarity'])
-    user_data['fam_score']=noofyes/len(user_data['familiarity'])
-    withAudio=calculate_with_audio(user_data['responses'])
-    images=calculate_images(user_data['responses'])
-    withoutAudio=calculate_without_audio(user_data['responses'])
-    user_data['withAudio']=withAudio
-    user_data['withoutAudio']=withoutAudio
-    user_data['images']=images
-    # user_data['familiarity']=countofyes/len(user_data['familiarity'])
     
-    # Load existing responses
-    if DB_PATH.exists():
-        with open(DB_PATH, 'r') as f:
-            responses = json.load(f)
-    else:
-        responses = []
+    # Calculate familiarity score
+    noofyes = count_familiarity(user_data['familiarity'])
+    user_data['fam_score'] = noofyes / len(user_data['familiarity'])
     
-    # Add new response
-    responses.append(user_data)
+    # Calculate additional metrics
+    withAudio = calculate_with_audio(user_data['responses'])
+    images = calculate_images(user_data['responses'])
+    withoutAudio = calculate_without_audio(user_data['responses'])
     
-    # Save updated responses
-    DB_PATH.parent.mkdir(parents=True, exist_ok=True)
-    with open(DB_PATH, 'w') as f:
-        json.dump(responses, f)
+    user_data['withAudio'] = withAudio
+    user_data['withoutAudio'] = withoutAudio
+    user_data['images'] = images
+    
+    # Get the Google Sheet
+    sheet = get_google_sheet()
+    
+    # Prepare the row to be added
+    row_to_add = [
+        user_data.get('name', ''),
+        user_data.get('age', ''),
+        user_data.get('gender', ''),
+        user_data.get('social_media_hours', ''),
+        json.dumps(user_data.get('responses', [])),
+        json.dumps(user_data.get('familiarity', [])),
+        user_data.get('accuracy', ''),
+        user_data.get('fam_score', ''),
+        user_data.get('withAudio', ''),
+        user_data.get('withoutAudio', ''),
+        user_data.get('images', '')
+    ]
+    
+    # Append the row to the end of the sheet
+    try:
+        sheet.append_row(row_to_add, value_input_option='RAW')
+        print("Response saved successfully.")
+    except Exception as e:
+        print(f"Error saving response: {e}")
+
+
+def load_all_responses():
+    """Load all responses from Google Sheets into a pandas DataFrame."""
+    sheet = get_google_sheet()
+    
+    # Get all values from the sheet
+    all_data = sheet.get_all_values()
+    
+    # The first row is assumed to be the header
+    headers = all_data[0]
+    
+    # The rest are data rows
+    data_rows = all_data[1:]
+    
+    # Create a DataFrame
+    df = pd.DataFrame(data_rows, columns=headers)
+    
+    # Parse JSON columns if they exist
+    if 'responses' in df.columns:
+        df['responses'] = df['responses'].apply(json.loads)
+    if 'familiarity' in df.columns:
+        df['familiarity'] = df['familiarity'].apply(json.loads)
+    
+    return df
+
+
+# The rest of the functions remain the same as in the original script
 def calculate_without_audio(responses):
     correct_pairs = 0
     
@@ -50,9 +115,10 @@ def calculate_without_audio(responses):
         if is_odd_real and is_even_fake:
             correct_pairs += 1
     
-    return correct_pairs
+    return correct_pairs/15
+
 def calculate_images(responses):
-    correct_pairs=0
+    correct_pairs = 0
     for i in range(1, 51, 2):
         pair_key1 = f'Image {i}'
         pair_key2 = f'Image {i+1}'
@@ -65,7 +131,8 @@ def calculate_images(responses):
         if is_odd_real and is_even_fake:
             correct_pairs += 1
     
-    return correct_pairs
+    return correct_pairs/25
+
 def calculate_with_audio(responses):
     correct_pairs = 0
     
@@ -82,22 +149,15 @@ def calculate_with_audio(responses):
         if is_odd_real and is_even_fake:
             correct_pairs += 1
     
-    return correct_pairs
-def load_all_responses():
-    """Load all responses from JSON database into a pandas DataFrame."""
-    if not DB_PATH.exists():
-        return pd.DataFrame()
-        
-    with open(DB_PATH, 'r') as f:
-        responses = json.load(f)
-    
-    return pd.DataFrame(responses)
+    return correct_pairs/10
+
 def count_familiarity(responses):
-    count=0
-    for i in range(len(responses)):
-        if responses[i]=='Yes':
-            count=count+1
+    count = 0
+    for response in responses:
+        if response == 'Yes':
+            count += 1
     return count
+
 def calculate_accuracy(responses):
     """
     Calculate number of correct responses based on ground truth.
@@ -135,7 +195,7 @@ def calculate_accuracy(responses):
         # Assumes response is in format like "Image 1: 1" or "Video 2: 0"
         predicted_label = int(response.split()[-1])
         
-        if predicted_label%2==1 :
-            correct+=1
+        if predicted_label % 2 == 1:
+            correct += 1
     
     return correct

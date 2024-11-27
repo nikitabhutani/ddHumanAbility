@@ -38,8 +38,12 @@ def perform_bayesian_analysis(data_df):
     intercepts = np.array(intercepts)
     
     # Calculate correlations using scipy.stats
-    age_corr, age_p = stats.pearsonr(data_df['age'], data_df['accuracy'])
-    social_corr, social_p = stats.pearsonr(data_df['social_media_hours'], data_df['accuracy'])
+    age=data_df['age']
+    numeric_age = pd.to_numeric(age)
+    numeric_accuracy = pd.to_numeric(data_df['accuracy'])
+    numeric_social_media_hours = pd.to_numeric(data_df['social_media_hours'])
+    age_corr, age_p = stats.pearsonr(numeric_age, numeric_accuracy )
+    social_corr, social_p = stats.pearsonr(numeric_social_media_hours, numeric_accuracy)
     
     # Prepare results
     results = {
