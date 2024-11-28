@@ -3,7 +3,8 @@ from pathlib import Path
 import pandas as pd
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
-
+from google.oauth2.service_account import Credentials
+import streamlit as st
 # Configure Google Sheets access
 def get_google_sheet():
     """
@@ -11,19 +12,21 @@ def get_google_sheet():
     Make sure to set up a service account and download the credentials JSON.
     """
     # Define the scope
-    scope = [
-        'https://spreadsheets.google.com/feeds',
-        'https://www.googleapis.com/auth/drive'
-    ]
+    credentials_dict = st.secrets["google_sheets"]
+        
+    # Create credentials using the dictionary
+    creds = Credentials.from_service_account_info(
+        credentials_dict, 
+        scopes=[
+            'https://spreadsheets.google.com/feeds',
+            'https://www.googleapis.com/auth/drive'
+        ]
+    )
     
-    # Path to your service account credentials JSON file
-    creds_path = 'ddhumanability.json'
-    
-    # Authenticate using the credentials
-    creds = ServiceAccountCredentials.from_json_keyfile_name(creds_path, scope)
+    # Authorize and open spreadsheet
     client = gspread.authorize(creds)
     
-    # Open the specific spreadsheet (replace with your spreadsheet name)
+    # Open the specific spreadsheet 
     sheet = client.open('ddhumanability').sheet1
     
     return sheet
