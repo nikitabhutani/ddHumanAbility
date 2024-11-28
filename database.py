@@ -181,15 +181,15 @@ def calculate_accuracy(responses):
     
     # Add 25 image pairs
     for i in range(1, 41):
-        ground_truth[f'Image {i}'] = 1 if i % 2 != 0 else 0
+        ground_truth[f'Image {i}'] = 1 if i % 2 == 0 else 0
     
     # Add 15 video pairs without audio
     for i in range(1+40, 17+40):
-        ground_truth[f'Video {i}'] = 1 if i % 2 != 0 else 0
+        ground_truth[f'Video {i}'] = 1 if i % 2 == 0 else 0
     
     # Add 10 video pairs with audio
     for i in range(57, 57+1):
-        ground_truth[f'Video {i}'] = 1 if i % 2 != 0 else 0
+        ground_truth[f'Video {i}'] = 1 if i % 2 == 0 else 0
     
     # Calculate correct responses
     correct = 0
@@ -198,7 +198,7 @@ def calculate_accuracy(responses):
         # Assumes response is in format like "Image 1: 1" or "Video 2: 0"
         predicted_label = int(response.split()[-1])
         
-        if predicted_label % 2 == 1:
+        if predicted_label % 2 == 0:
             correct += 1
     
     return correct
