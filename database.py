@@ -112,8 +112,8 @@ def calculate_without_audio(responses):
         
         # Odd-numbered videos (1, 3, 5, ...) should be real
         # Even-numbered videos (2, 4, 6, ...) should be fake
-        is_odd_real = pair_key1 in responses
-        is_even_fake = pair_key2 not in responses
+        is_odd_real = pair_key1 not in responses
+        is_even_fake = pair_key2 in responses
         
         if is_odd_real and is_even_fake:
             correct_pairs += 1
@@ -128,8 +128,8 @@ def calculate_images(responses):
         
         # Odd-numbered images (1, 3, 5, ...) should be real
         # Even-numbered images (2, 4, 6, ...) should be fake
-        is_odd_real = pair_key1 in responses
-        is_even_fake = pair_key2 not in responses
+        is_odd_real = pair_key1 not in responses
+        is_even_fake = pair_key2 in responses
         
         if is_odd_real and is_even_fake:
             correct_pairs += 1
@@ -146,8 +146,8 @@ def calculate_with_audio(responses):
         
         # Odd-numbered videos (1, 3, 5, ...) should be real
         # Even-numbered videos (2, 4, 6, ...) should be fake
-        is_odd_real = pair_key1 in responses
-        is_even_fake = pair_key2 not in responses
+        is_odd_real = pair_key1 not in responses
+        is_even_fake = pair_key2 in responses
         
         if is_odd_real and is_even_fake:
             correct_pairs += 1
