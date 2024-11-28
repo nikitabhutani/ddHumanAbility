@@ -103,7 +103,7 @@ def calculate_without_audio(responses):
     correct_pairs = 0
     
     # Iterate through pairs (1-2, 3-4, 5-6, etc.)
-    for i in range(1+50, 31+50, 2):
+    for i in range(1+40, 17+40, 2):
         pair_key1 = f'Video {i}'
         pair_key2 = f'Video {i+1}'
         
@@ -115,11 +115,11 @@ def calculate_without_audio(responses):
         if is_odd_real and is_even_fake:
             correct_pairs += 1
     
-    return correct_pairs/15
+    return correct_pairs/8
 
 def calculate_images(responses):
     correct_pairs = 0
-    for i in range(1, 51, 2):
+    for i in range(1, 41, 2):
         pair_key1 = f'Image {i}'
         pair_key2 = f'Image {i+1}'
         
@@ -131,13 +131,13 @@ def calculate_images(responses):
         if is_odd_real and is_even_fake:
             correct_pairs += 1
     
-    return correct_pairs/25
+    return correct_pairs/20
 
 def calculate_with_audio(responses):
     correct_pairs = 0
     
     # Iterate through pairs (1-2, 3-4, 5-6, etc.)
-    for i in range(1+80, 21+80, 2):
+    for i in range(1+56, 17+56, 2):
         pair_key1 = f'Video {i}'
         pair_key2 = f'Video {i+1}'
         
@@ -149,7 +149,7 @@ def calculate_with_audio(responses):
         if is_odd_real and is_even_fake:
             correct_pairs += 1
     
-    return correct_pairs/10
+    return correct_pairs/8
 
 def count_familiarity(responses):
     count = 0
@@ -177,15 +177,15 @@ def calculate_accuracy(responses):
     ground_truth = {}
     
     # Add 25 image pairs
-    for i in range(1, 51):
+    for i in range(1, 41):
         ground_truth[f'Image {i}'] = 1 if i % 2 != 0 else 0
     
     # Add 15 video pairs without audio
-    for i in range(1+50, 31+50):
+    for i in range(1+40, 17+40):
         ground_truth[f'Video {i}'] = 1 if i % 2 != 0 else 0
     
     # Add 10 video pairs with audio
-    for i in range(81, 101):
+    for i in range(57, 57+1):
         ground_truth[f'Video {i}'] = 1 if i % 2 != 0 else 0
     
     # Calculate correct responses

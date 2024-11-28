@@ -76,8 +76,8 @@ def main():
             # Display Images
             st.subheader("Image Analysis")
             for i, (real_img, fake_img) in enumerate(zip(
-                media_config['images']['real'][:25], 
-                media_config['images']['fake'][:25]
+                media_config['images']['real'][:20], 
+                media_config['images']['fake'][:20]
             )):
                 col1, col2 = st.columns(2)
                 with col1:
@@ -104,8 +104,8 @@ def main():
             # Display Videos
             st.subheader("Video Analysis")
             for i, (real_video, fake_video) in enumerate(zip(
-                media_config['videos']['no_audio']['real'][:15],
-                media_config['videos']['no_audio']['fake'][:15]
+                media_config['videos']['no_audio']['real'][:8],
+                media_config['videos']['no_audio']['fake'][:8]
             )):
                 col1, col2 = st.columns(2)
                 with col1:
@@ -122,7 +122,7 @@ def main():
                     )
                 response = st.radio(
                     f"Which video do you think is fake? (Pair {i+1})",
-                    [f"Video {i*2 + 1+50}", f"Video {i*2 + 2+50}"]
+                    [f"Video {i*2 + 1+40}", f"Video {i*2 + 2+40}"]
                 )
                 responses.append(response)
                 familiarity.append(fam1)
@@ -130,8 +130,8 @@ def main():
             # Display Audio Videos
             st.subheader("Video with Audio Analysis")
             for i, (real_video, fake_video) in enumerate(zip(
-                media_config['videos']['with_audio']['real'][:10],
-                media_config['videos']['with_audio']['fake'][:10]
+                media_config['videos']['with_audio']['real'][:8],
+                media_config['videos']['with_audio']['fake'][:8]
             )):
                 col1, col2 = st.columns(2)
                 with col1:
@@ -148,7 +148,7 @@ def main():
                     )
                 response = st.radio(
                     f"Which video do you think is fake? (Audio Pair {i+1})",
-                    [f"Video {i*2 + 1+80}", f"Video {i*2 + 2+80}"]
+                    [f"Video {i*2 + 1+56}", f"Video {i*2 + 2+56}"]
                 )
                 responses.append(response)
                 familiarity.append(fam1)
@@ -191,47 +191,44 @@ def main():
                               trendline="ols")
         st.plotly_chart(fig_fam)
     
-        all_responses['withAudio'] = all_responses['withAudio'].astype(int)
-        all_responses['withoutAudio'] = all_responses['withoutAudio'].astype(int)
-        all_responses['images'] = all_responses['images'].astype(int)
+        all_responses['withAudio'] = all_responses['withAudio'].astype(float)
+        all_responses['withoutAudio'] = all_responses['withoutAudio'].astype(float)
+        all_responses['images'] = all_responses['images'].astype(float)
         withaudio=all_responses['withAudio'].mean()
         withoutaudio=all_responses['withoutAudio'].mean()
         print(withoutaudio)
         images=all_responses['images'].mean()
-        accuracy=[1,2,3]
-        # accuracy.append(images)
-        # print(images)
-        # accuracy.append(withaudio)
-        # print(withaudio)
-        # accuracy.append(withoutaudio)
-        # print(withoutaudio)
-        # print(accuracy)
-        # fig = plt.figure(figsize = (10, 5))
-        plt.bar(['Images', 'WithAudio', 'WithoutAudio'], accuracy, color=['skyblue', 'lightgreen', 'lightcoral'],width=0.5, alpha=0.8)
+        fig, ax = plt.subplots(figsize=(10, 5))
+        categories = ['Images', 'WithAudio', 'WithoutAudio']
+        accuracy = [images, withaudio, withoutaudio]
+
+        ax.bar(categories, accuracy, color=['skyblue', 'lightgreen', 'lightcoral'], width=0.5, alpha=0.8)
 
         # Adding labels and title
-        plt.xlabel('Categories')
-        plt.ylabel('Accuracy')
-        plt.title('Accuracy for Images, With Audio, and Without Audio')
-        plt.show()
+        ax.set_xlabel('Categories')
+        ax.set_ylabel('Accuracy')
+        ax.set_title('Accuracy for Images, With Audio, and Without Audio')
+
+        # Display the plot in Streamlit
+        st.pyplot(fig)
         # images
-        fig_images = px.scatter(all_responses, x='images', 
-                              y='accuracy',
-                              title='Images vs Detection Accuracy',
-                              trendline="ols")
-        st.plotly_chart(fig_images)
-         # Videos without Audio
-        fig_videos = px.scatter(all_responses, x='withoutAudio', 
-                              y='accuracy',
-                              title='Videos without Audio vs Detection Accuracy',
-                              trendline="ols")
-        st.plotly_chart(fig_videos)
-        # Videos with Audio
-        fig_videos_audio = px.scatter(all_responses, x='withAudio', 
-                              y='accuracy',
-                              title='Videos with Audio vs Detection Accuracy',
-                              trendline="ols")
-        st.plotly_chart(fig_videos_audio)
+        # fig_images = px.scatter(all_responses, x='images', 
+        #                       y='accuracy',
+        #                       title='Images vs Detection Accuracy',
+        #                       trendline="ols")
+        # st.plotly_chart(fig_images)
+        #  # Videos without Audio
+        # fig_videos = px.scatter(all_responses, x='withoutAudio', 
+        #                       y='accuracy',
+        #                       title='Videos without Audio vs Detection Accuracy',
+        #                       trendline="ols")
+        # st.plotly_chart(fig_videos)
+        # # Videos with Audio
+        # fig_videos_audio = px.scatter(all_responses, x='withAudio', 
+        #                       y='accuracy',
+        #                       title='Videos with Audio vs Detection Accuracy',
+        #                       trendline="ols")
+        # st.plotly_chart(fig_videos_audio)
         # Gender comparison
         fig_gender = px.box(all_responses, x='gender', y='accuracy',
                           title='Detection Accuracy by Gender')
