@@ -34,7 +34,7 @@ def load_media_paths():
 
 def main():
     st.set_page_config(page_title="Can you detect a deepfake?", layout="wide")
-    st.title("How good are you in Detecting Deepfakes?")
+    st.title("How good are you at detecting Deepfakes?")
 
     # Initialize session state
     if 'page' not in st.session_state:
