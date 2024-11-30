@@ -33,8 +33,8 @@ def load_media_paths():
     return media_config
 
 def main():
-    st.set_page_config(page_title="Deepfake Detection Study", layout="wide")
-    st.title("Deepfake Detection Awareness Study")
+    st.set_page_config(page_title="Can you detect a deepfake?", layout="wide")
+    st.title("How good are you in Detecting Deepfakes?")
 
     # Initialize session state
     if 'page' not in st.session_state:
@@ -83,14 +83,14 @@ def main():
                 with col1:
                     st.image(str(real_img), caption=f"Image {i*2 + 1}")
                     fam1=st.radio(
-                    f"do you know person in image 1 (Pair {i+1})",
-                    [f"Yes", f"No"]
+                    f"do you know person in image {i*2+1} (Pair {i+1})",
+                    [f"No", f"Yes"]
                 )
                 with col2:
                     st.image(str(fake_img), caption=f"Image {i*2 + 2}")
                     fam2=st.radio(
-                    f"do you know person in image 2 (Pair {i+1})",
-                    [f"Yes", f"No"]
+                    f"do you know person in image {i*2+2} (Pair {i+1})",
+                    [f"No", f"Yes"]
                 )
                
                 
@@ -111,14 +111,14 @@ def main():
                 with col1:
                     st.video(str(real_video))
                     fam1=st.radio(
-                    f"do you know person in video 1 (Pair {i+1})",
-                    [f"Yes", f"No"]
+                    f"do you know person in video {2*i+1} (Pair {i+1})",
+                    [f"No", f"Yes"]
                     )
                 with col2:
                     st.video(str(fake_video))
                     fam2=st.radio(
-                    f"do you know person in video 2 (Pair {i+1})",
-                    [f"Yes", f"No"]
+                    f"do you know person in video {2*i+2} (Pair {i+1})",
+                    [f"No", f"Yes"]
                     )
                 response = st.radio(
                     f"Which video do you think is fake? (Pair {i+1})",
@@ -138,13 +138,13 @@ def main():
                     st.video(str(real_video))
                     fam1=st.radio(
                     f"do you know person in video {2*i+1}? ",
-                    [f"Yes", f"No"]
+                    [f"No", f"Yes"]
                     )
                 with col2:
                     st.video(str(fake_video))
                     fam2=st.radio(
                     f"do you know person in video {2*i+2} ? ",
-                    [f"Yes", f"No"]
+                    [f"No", f"Yes"]
                     )
                 response = st.radio(
                     f"Which video do you think is fake? (Audio Pair {i+1})",
