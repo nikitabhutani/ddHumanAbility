@@ -53,7 +53,7 @@ def main():
             st.markdown("Tell us a bit about yourself before diving into the deepfake detection test.")
             
             name = st.text_input("🔤 Your Name")
-            age = st.number_input("🎂 Your Age", min_value=18, max_value=100)
+            age = st.number_input("🎂 Your Age", max_value=100)
             gender = st.selectbox("👤 Gender", ["Male", "Female", "Other"])
             
             st.subheader("📱 Social Media Habits")
@@ -61,7 +61,7 @@ def main():
             facebook = st.number_input("🌐 Facebook", min_value=0.0, max_value=24.0, step=0.5)
             instagram = st.number_input("📸 Instagram", min_value=0.0, max_value=24.0, step=0.5)
             twitter = st.number_input("🐦 Twitter", min_value=0.0, max_value=24.0, step=0.5)
-            tiktok = st.number_input("🎥 TikTok", min_value=0.0, max_value=24.0, step=0.5)
+            tiktok = st.number_input("🎥 WhatsApp", min_value=0.0, max_value=24.0, step=0.5)
             
             if st.form_submit_button("🚀 Start Test"):
                 st.session_state.user_data = {
@@ -196,27 +196,33 @@ def main():
         all_responses = load_all_responses()
         analysis_results = perform_bayesian_analysis(all_responses)
         
+        # Calculate and display user-specific accuracy
+        user_response = all_responses[all_responses['name'] == st.session_state.user_data['name']]
+        user_accuracy = float(user_response['accuracy'].values[0])
+        st.subheader("🏆 Your Overall Accuracy")
+        st.markdown(f"**Your detection accuracy:** {user_accuracy:.2f} (out of 1.0)")
+        
         # Display correlation plots
         st.subheader("📈 Correlation Analysis")
-        
+        st.markdown(f"**Following are the combined accuracy details of all the users who have taken this test till now.** ")
         # Age vs Detection Accuracy
         fig_age = px.scatter(all_responses, x='age', y='accuracy',
-                           title='Age vs Detection Accuracy',
-                           trendline="ols")
+                            title='Age vs Detection Accuracy',
+                            trendline="ols")
         st.plotly_chart(fig_age)
         
         # Social Media Hours vs Detection Accuracy
         fig_social = px.scatter(all_responses, x='social_media_hours', 
-                              y='accuracy',
-                              title='Social Media Usage vs Detection Accuracy',
-                              trendline="ols")
+                                y='accuracy',
+                                title='Social Media Usage vs Detection Accuracy',
+                                trendline="ols")
         st.plotly_chart(fig_social)
         
         # Familiarity vs Detection Accuracy
         fig_fam = px.scatter(all_responses, x='fam_score', 
-                              y='accuracy',
-                              title='Familiarity vs Detection Accuracy',
-                              trendline="ols")
+                            y='accuracy',
+                            title='Familiarity vs Detection Accuracy',
+                            trendline="ols")
         st.plotly_chart(fig_fam)
         
         all_responses['withAudio'] = all_responses['withAudio'].astype(float)
@@ -237,7 +243,7 @@ def main():
         
         # Gender comparison
         fig_gender = px.box(all_responses, x='gender', y='accuracy',
-                          title='Detection Accuracy by Gender')
+                            title='Detection Accuracy by Gender')
         st.plotly_chart(fig_gender)
         
         # Display Bayesian analysis results
