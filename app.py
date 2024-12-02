@@ -111,7 +111,7 @@ def main():
                     )
                 response = st.radio(
                     f"Which image do you think is fake? (Pair {i+1})",
-                    [f"Image {i*2 + 1}", f"Image {i*2 + 2}"],index=None
+                    [f"Image {i*2+ + 1}", f"Image {i*2 + 2}"],index=None
                 )
                 responses.append(response)
                 familiarity.append(fam1)
@@ -131,18 +131,18 @@ def main():
                 with col1:
                     st.video(str(real_video))
                     fam1 = st.radio(
-                        f"Do you recognize the person in Video {2*i + 1} (Pair {i+1})?",
+                        f"Do you recognize the person in Video {2*i + 1+40} (Pair {i+1})?",
                         ["No", "Yes"]
                     )
                 with col2:
                     st.video(str(fake_video))
                     fam2 = st.radio(
-                        f"Do you recognize the person in Video {2*i + 2} (Pair {i+1})?",
+                        f"Do you recognize the person in Video {2*i + 2+40} (Pair {i+1})?",
                         ["No", "Yes"]
                     )
                 response = st.radio(
                     f"Which video do you think is fake? (Pair {i+1})",
-                    [f"Video {2*i + 1}", f"Video {2*i + 2}"],index=None
+                    [f"Video {2*i + 1+40}", f"Video {2*i + 2+40}"],index=None
                 )
                 responses.append(response)
                 familiarity.append(fam1)
@@ -161,18 +161,18 @@ def main():
                 with col1:
                     st.video(str(real_video))
                     fam1 = st.radio(
-                        f"Do you recognize the person in Video {2*i + 1}? ",
+                        f"Do you recognize the person in Video {2*i + 1+56}? ",
                         ["No", "Yes"]
                     )
                 with col2:
                     st.video(str(fake_video))
                     fam2 = st.radio(
-                        f"Do you recognize the person in Video {2*i + 2}? ",
+                        f"Do you recognize the person in Video {2*i + 2+56}? ",
                         ["No", "Yes"]
                     )
                 response = st.radio(
                     f"Which video do you think is fake? (Audio Pair {i+1})",
-                    [f"Video {2*i+1}", f"Video {2*i+2}"],index=None
+                    [f"Video {2*i+1+56}", f"Video {2*i+2+56}"],index=None
                 )
                 responses.append(response)
                 familiarity.append(fam1)

@@ -106,15 +106,17 @@ def calculate_without_audio(responses):
     correct_pairs = 0
     
     # Iterate through pairs (1-2, 3-4, 5-6, etc.)
-    for i in range(1, 17, 2):
+    for i in range(1+40, 17+40, 2):
         pair_key1 = f'Video {i}'
         pair_key2 = f'Video {i+1}'
-        
+        print(pair_key1)
+        print(pair_key2)
         # Odd-numbered videos (1, 3, 5, ...) should be real
         # Even-numbered videos (2, 4, 6, ...) should be fake
         is_odd_real = pair_key1 not in responses
         is_even_fake = pair_key2 in responses
-        
+        print(is_odd_real)
+        print(is_even_fake)
         if is_odd_real and is_even_fake:
             correct_pairs += 1
     
@@ -140,7 +142,7 @@ def calculate_with_audio(responses):
     correct_pairs = 0
     
     # Iterate through pairs (1-2, 3-4, 5-6, etc.)
-    for i in range(1, 17, 2):
+    for i in range(1+56, 17+56, 2):
         pair_key1 = f'Video {i}'
         pair_key2 = f'Video {i+1}'
         
