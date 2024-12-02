@@ -106,7 +106,7 @@ def calculate_without_audio(responses):
     correct_pairs = 0
     
     # Iterate through pairs (1-2, 3-4, 5-6, etc.)
-    for i in range(1+40, 17+40, 2):
+    for i in range(1, 17, 2):
         pair_key1 = f'Video {i}'
         pair_key2 = f'Video {i+1}'
         
@@ -140,7 +140,7 @@ def calculate_with_audio(responses):
     correct_pairs = 0
     
     # Iterate through pairs (1-2, 3-4, 5-6, etc.)
-    for i in range(1+56, 17+56, 2):
+    for i in range(1, 17, 2):
         pair_key1 = f'Video {i}'
         pair_key2 = f'Video {i+1}'
         

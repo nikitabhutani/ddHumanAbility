@@ -172,7 +172,7 @@ def main():
                     )
                 response = st.radio(
                     f"Which video do you think is fake? (Audio Pair {i+1})",
-                    [f"Video {2*i + 1}", f"Video {2*i + 2}"],index=None
+                    [f"Video {2*i+1}", f"Video {2*i+2}"],index=None
                 )
                 responses.append(response)
                 familiarity.append(fam1)
