@@ -111,7 +111,7 @@ def main():
                     )
                 response = st.radio(
                     f"Which image do you think is fake? (Pair {i+1})",
-                    [f"Image {i*2 + 1}", f"Image {i*2 + 2}"]
+                    [f"Image {i*2 + 1}", f"Image {i*2 + 2}"],index=None
                 )
                 responses.append(response)
                 familiarity.append(fam1)
@@ -142,7 +142,7 @@ def main():
                     )
                 response = st.radio(
                     f"Which video do you think is fake? (Pair {i+1})",
-                    [f"Video {2*i + 1}", f"Video {2*i + 2}"]
+                    [f"Video {2*i + 1}", f"Video {2*i + 2}"],index=None
                 )
                 responses.append(response)
                 familiarity.append(fam1)
@@ -172,18 +172,22 @@ def main():
                     )
                 response = st.radio(
                     f"Which video do you think is fake? (Audio Pair {i+1})",
-                    [f"Video {2*i + 1}", f"Video {2*i + 2}"]
+                    [f"Video {2*i + 1}", f"Video {2*i + 2}"],index=None
                 )
                 responses.append(response)
                 familiarity.append(fam1)
                 familiarity.append(fam2)
 
             if st.form_submit_button("📤 Submit Responses"):
-                st.session_state.user_data['responses'] = responses
-                st.session_state.user_data['familiarity'] = familiarity
-                save_user_response(st.session_state.user_data)
-                st.session_state.page = 'results'
-                st.rerun()
+                if None in responses:  # Check for unselected responses
+                    st.error("Please answer all questions before submitting!")
+                else:
+                    # Process responses here
+                    st.session_state.user_data['responses'] = responses
+                    st.session_state.user_data['familiarity'] = familiarity
+                    save_user_response(st.session_state.user_data)
+                    st.session_state.page = 'results'
+                    st.rerun()
 
     # Results Page
     elif st.session_state.page == 'results':
